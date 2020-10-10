@@ -1,25 +1,25 @@
 ## ECE 565 Programming Assignment 1 Fall 2020
 ### Professor Tim Rogers
 
-1. Introduction
+1. **Introduction**
     
     This assignment will serve as an introduction to the gem5 simulator. It will walk you through the necessary steps to set up the simulator on your account, and provide you with some introductory tasks that will help you familiarize yourself with the gem5 structure and source tree. While the tasks aren’t difficult in and of themselves, do not underestimate the time it will take to get familiar with the gem5 source tree before you’ll be able to complete the tasks.
  The gem5 simulator is written primarily in C++. However, configurations are done in Python, so you’ll need to be familiar with Python as well. It’s easy to read, but be aware that spacing in Python matters if you find yourself editing a Python file for the first time – it’s worth finding a quick tutorial on Python to learn the basics. A utility called SWIG is used to combine the configurations in Python and the actual simulator written in C++.
     
-1. Setup
+1. **Setup**
     The assignment has been made available through github classroom. To sign up - please link your github account with your Purdue email by following the directions here:
     
     https://classroom.github.com/a/PrGvMvVm
     
     The programming assignment will be completed on a cluster of "qstruct" servers. There are 19 of these machines. You can access them by ssh’ing into qstruct.ecn.purdue.edu from any terminal. You will use your Purdue Career Account username and password. Below is the sample command for logging in:
     ```console
-    ssh <career-user-id>@qstruct.ecn.purdue.edu
+    ssh <**career-user-id**>@qstruct.ecn.purdue.edu
     ```
     
     Once logged into qstruct, you will need to clone your version of the assignment from github classroom. To make a copy of your code locally use:
     
     ```console
-    git clone https://github.com/purdue-ece565-2020/assignment-1-v2-<your-github-user-name>.git
+    git clone https://github.com/purdue-ece565-2020/assignment-1-v2-<**your-github-user-name**>.git
     ```
     
     Git is the world's most popular revision control system, so if you are not familiar with it, now is a great time :).
