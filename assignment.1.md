@@ -34,3 +34,8 @@
     PROTOCOL = ’MI_example’
     
     TODO - include image
+    
+    We will be using the latest version of gem5, which has fairly up-to-date documentation outside of this assignment.
+    For additional pointers on gem5, please see the book on learning gem5:
+    https://www.gem5.org/documentation/learning_gem5/introduction/
+    
