@@ -13,9 +13,9 @@
     https://classroom.github.com/a/PrGvMvVm
     
     The programming assignment will be completed on a cluster of "qstruct" servers. There are 19 of these machines. You can access them by ssh’ing into qstruct.ecn.purdue.edu from any terminal. You will use your Purdue Career Account username and password. Below is the sample command for logging in:
-    ```console
+    <pre><code>
     ssh <<b>career-user-id</b>>@qstruct.ecn.purdue.edu
-    ```
+    </code></pre>
     
     Once logged into qstruct, you will need to clone your version of the assignment from github classroom. To make a copy of your code locally use:
     
