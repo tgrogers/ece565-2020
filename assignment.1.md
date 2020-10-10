@@ -7,6 +7,7 @@
  The gem5 simulator is written primarily in C++. However, configurations are done in Python, so you’ll need to be familiar with Python as well. It’s easy to read, but be aware that spacing in Python matters if you find yourself editing a Python file for the first time – it’s worth finding a quick tutorial on Python to learn the basics. A utility called SWIG is used to combine the configurations in Python and the actual simulator written in C++.
     
 1. **Setup**
+    
     The assignment has been made available through github classroom. To sign up - please link your github account with your Purdue email by following the directions here:
     
     https://classroom.github.com/a/PrGvMvVm
@@ -27,7 +28,8 @@
     You now have your own fresh copy of gem5! Going into your gem5 directory, you’ll see a variety of folders, including the src directory, where most of your changes will be made. You may find yourself working in the configs directory from time to time as well. It is worth spending some time exploring these directories to get a feel for where different things are.
     TODO - include image
     
-1. Building gem5
+1. **Building gem5**
+    
     gem5 is a highly configurable architectural simulator that supports a number of ISAs (x86, ARM, MIPS, SPARC, POWER, RISCV), CPU Models (InOrder, O3, AtomicSimple, TimingSimple), and two Memory Models (Classic, Ruby). To understand how to build gem5, you must understand what you are building first. Example gem5 build files are located in gem5/build_opts. For example, the ’X86’ file is as follows:
     TARGET_ISA = ’x86’
     CPU_MODELS = ’AtomicSimpleCPU,TimingSimpleCPU,O3CPU’
