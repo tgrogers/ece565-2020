@@ -5,5 +5,3 @@ relative_links:
   collections: true
 include:
   - assignment.1.md
-
-theme: jekyll-theme-slate
