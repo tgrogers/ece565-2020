@@ -27,16 +27,19 @@
     Given it's popularity, it is very well documented simply googling will give you a number of high-quality tutorials to get you familiar with it. This assignemnet doc will provide you with the basic commands.
     You now have your own fresh copy of gem5! Going into your gem5 directory, you’ll see a variety of folders, including the src directory, where most of your changes will be made. You may find yourself working in the configs directory from time to time as well. It is worth spending some time exploring these directories to get a feel for where different things are.
     
-    ![Figure 1. Login and clone example](screen1.png =100x)
+    <img src="screen1.png" width="50%" />
     
 1. **Building gem5**
     
     gem5 is a highly configurable architectural simulator that supports a number of ISAs (x86, ARM, MIPS, SPARC, POWER, RISCV), CPU Models (InOrder, O3, AtomicSimple, TimingSimple), and two Memory Models (Classic, Ruby). To understand how to build gem5, you must understand what you are building first. Example gem5 build files are located in gem5/build_opts. For example, the ’X86’ file is as follows:
+    
+    ```console
     TARGET_ISA = ’x86’
     CPU_MODELS = ’AtomicSimpleCPU,TimingSimpleCPU,O3CPU’
     PROTOCOL = ’MI_example’
+    ```
     
-    ![Figure 2. Printing config.](screen2.png)
+    <img src="screen2.png" width="50%" />
     
     We will be using the latest version of gem5, which has fairly up-to-date documentation outside of this assignment.
     For additional pointers on gem5, please see the book on learning gem5:
