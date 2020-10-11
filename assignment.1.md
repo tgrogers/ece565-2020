@@ -26,7 +26,11 @@
     Git is the world's most popular revision control system, so if you are not familiar with it, now is a great time :).
     Given it's popularity, it is very well documented simply googling will give you a number of high-quality tutorials to get you familiar with it. This assignemnet doc will provide you with the basic commands.
     You now have your own fresh copy of gem5! Going into your gem5 directory, you’ll see a variety of folders, including the src directory, where most of your changes will be made. You may find yourself working in the configs directory from time to time as well. It is worth spending some time exploring these directories to get a feel for where different things are.
-    TODO - include image
+    
+    <figure class="image">
+    <img src="screen1.png">
+    <figcaption>Figure 1. Login and clone example.</figcaption>
+    </figure>
     
 1. **Building gem5**
     
