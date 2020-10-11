@@ -27,10 +27,7 @@
     Given it's popularity, it is very well documented simply googling will give you a number of high-quality tutorials to get you familiar with it. This assignemnet doc will provide you with the basic commands.
     You now have your own fresh copy of gem5! Going into your gem5 directory, you’ll see a variety of folders, including the src directory, where most of your changes will be made. You may find yourself working in the configs directory from time to time as well. It is worth spending some time exploring these directories to get a feel for where different things are.
     
-    <figure align="center" class="image">
-    <img src="screen1.png" width="50%">
-    <br><figcaption>Figure 1. Login and clone example.</figcaption>
-    </figure>
+    ![Figure 1. Login and clone example](screen1.png)
     
 1. **Building gem5**
     
@@ -39,7 +36,7 @@
     CPU_MODELS = ’AtomicSimpleCPU,TimingSimpleCPU,O3CPU’
     PROTOCOL = ’MI_example’
     
-    TODO - include image
+    ![Figure 2. Printing config.](screen2.png)
     
     We will be using the latest version of gem5, which has fairly up-to-date documentation outside of this assignment.
     For additional pointers on gem5, please see the book on learning gem5:
