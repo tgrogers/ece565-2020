@@ -84,3 +84,65 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
     Now looking at the script used to run the SPEC2006 benchmarks, we see it’s located in the configs/spec2k6 directory we saw earlier. Here, we use the -b flag to specify which benchmark we want to run – in this case, sjeng. The --maxinsts=X flag is used to specify how many instructions to run the benchmarks for. These benchmarks are massive and take hours upon hours to complete in full, so it will often be useful to run them only for a specific number of instructions. Since these options all apply to the script, they come after the script in the command, not before it.
     
     Try running the other benchmarks, bzip2 and libquantum, and have them all output to separate directories. More options for the gem5/configs/spec2k6/run.py script can be seen by using the -h flag, or by going into the file and looking around.
+
+1. Assignment
+    
+    gem5 is an immensely complex piece of software with over 100k lines of code. However, it is not necessary to understand all of gem5 prior to being able to effectively use it. For this assignment you should focus on the InOrder CPU Model located in /src/cpu/inorder. The InOrder CPU currently models a 5-stage pipeline (F|D|EX|M|WB).  (Hint: Use the -h flag with your Python script to find out how to specify the CPU model you use.)
+    One caveat of this CPU model is that each pipeline stage/component inherits from an abstracted resource object. As with every resource, there is the contingency of encountering a structural hazard. The occurrence of a structural hazard is dependent on the width of the corresponding stage. Thus in order to model one outstanding instruction per stage, you have to adjust the width of each stage to be 1.
+    For this programming assignment, you will be required to implement the following changes in gem5:
+
+    * Disable bypassing
+    * Degrade branch prediction
+    * Split the Execution stage into two separate pipeline stages
+    
+    Each of these are detailed further below. For each change, you will need to run the sjeng, bzip2, and libquantum benchmarks for 100 million instructions. These results will then be compared to the baseline gem5 performance for the InOrder CPU model. Make sure to take advantage of different output directories to avoid overwriting output data from different runs.
+    
+        1. Disable Bypassing
+        
+        The InOrder CPU already accounts for the timing model of register bypassing between relevant pipeline stages. Checking whether or not a register value can be bypassed from a later pipeline stage depends on two conditions:
+        
+        * Whether or not the corresponding value is valid
+        * Can the value be forwarded
+        
+        What needs to be done for this part of the assignment is to implement an option to disable register bypassing in all cases, such that the CPU is forced to stall on every dependency.
+        
+        1. 6.2	Degrade Branch Prediction
+        
+        The InOrder CPU already implements a few branch predictor modules, including a tournament predictor and a simpler Branch Target Buffer (BTB). The pipeline timing enables you to figure out at the EX stage whether or not the branch prediction was correct. What you need to do is implement an option that will allow you to not only enable/disable the branch predictor, but degrade its accuracy to different levels as well.
+        
+        Note that the pipeline already handles the squashing of instructions fetched from the wrong path. On a misprediction, the pipeline will initiate calls to update the corresponding branch predictor’s entry with the correct target address.
+        
+        It would be functionally correct to squash the pending instructions if the predicted target is correct, but it would not be functionally correct to consider the branch correctly predicted when the predicted target does not match the actual branch target, and still consider it to be correct. For this part of the assignment, you need to implement a feature that degrades the branch predictor’s accuracy by treating some correctly predicted branches as incorrect. You will need to generate a random number between 0 and 1, and for a specified accuracy of X%, if the generated number is greater than X%, consider it a misprediction. Note that this "accuracy" is not the branch predictor’s accuracy, but the percentage of it’s original accuracy. That is, 100% would be equal to the default branch predictor’s accuracy, 50% would be half of the original predictor’s accuracy, and 0% would be an always incorrect predictor – it always predicts the wrong thing.
+        
+        For this, you will need to run the benchmark simulations for those three "accuracies:"
+        
+        * 100%
+        * 50%
+        * 0%
+        
+        1. For this part, we want to be able to split up the Execution Unit into two stages. Modern pipelines employ deeper pipelines in order to increase the clock frequency. Instead of having a more complex stage that requires additional cycles, the corresponding stage is split into smaller stages, where each requires fewer cycles. However, as you know there is a trade-off for every design decision. What you need to do is split up the EX stage into EX1 + EX2 accordingly. In doing so, you need to figure out how to indicate that dependencies exist between the newly formed stages such that the pipeline accounts for stalls correctly.
+        
+    1. **Submission instructions**
+    
+    You will submit your code through the github classroom interface. Some basic command you will need for git are:
+    
+    ```console
+    git status # Tells you what files you have modified
+    git add <file name> # Once you have modified a file, adding it will "stage" it for commiting.
+    git commit # commits all the files you currently have staged
+    git push # sends all the commits you have made to the remote reposity, where they are backed up and the instructor can see them.
+    ```
+    
+    Note that gem5 has some committing requirements. You have to structure your commit message like:
+    
+    ```console
+    git commit -m "<component-touched>: short description"
+    # i.e.
+    git commit -m "python: made the scripts work with python3"
+    ```
+    
+    This restriction is mostly for development purposes, if you want to tag everything with *cpu:* or *python*, thats fine.
+    
+    As a general rule (for your own sake) I recommend committing often, so that you can undo things you messed up and you have a nice record for yourself of all the things you have done. When grading the assignment, I will only look at the final version of the code, regardless of the commit history.
+    
+    Submit a report (maximum two pages) with three graphs. Each graph should summarize the results of one of the experiments. (Suggested format: Plot bar-graphs with benchmarks on the X-axis and IPC on the Y-axis. For each benchmark, show two or more bars; one is the baseline and the rest correspond to your changes.) The report is NOT meant to be an exercise in writing. I do not expect any text beyond a 2-3 sentence summary of the key observations for each graph. However, this is a minimum and not a maximum. If you have text you want me to see (e.g., assumptions, simplifications, data-gathering difficulties etc.), feel free to write additional text in the report. Also if the branch of code you want me to look at is anything other than *master*, please indicate this in the report.
