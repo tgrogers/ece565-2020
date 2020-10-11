@@ -78,6 +78,7 @@ For this assignment, we will use the x86 build configuration. Now, the command t
 The benchmarks you’ll be running in this assignment are sjeng, libquantum, and bzip2. Using the gem5/configs/spec2k6/run.py script, you can run the following command:
 
     ```console
+    ##### Also need to set the rigth CPU model inside the spec2k directory.
     ./build/X86/gem5.opt -d my_outputs configs/spec2k6/run.py -b sjeng --maxinsts=250000
     ```
     
