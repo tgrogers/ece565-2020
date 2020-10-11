@@ -17,9 +17,10 @@
     ssh <your-career-user-id>@qstruct.ecn.purdue.edu
     ```
     
-    Once logged into qstruct, you will need to clone your version of the assignment from github classroom. To make a copy of your code locally use:
+    Once logged into qstruct, you will need to install a missing python package and clone your version of the assignment from github classroom. To make a copy of your code locally use:
     
     ```console
+    pip3 install --user six
     git clone https://github.com/purdue-ece565-2020/assignment-1-v2-<your-github-user-name>.git
     ```
     
