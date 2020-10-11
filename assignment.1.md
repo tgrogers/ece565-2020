@@ -97,16 +97,16 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
     
     Each of these are detailed further below. For each change, you will need to run the sjeng, bzip2, and libquantum benchmarks for 100 million instructions. These results will then be compared to the baseline gem5 performance for the InOrder CPU model. Make sure to take advantage of different output directories to avoid overwriting output data from different runs.
     
-        1. Disable Bypassing
-        
+    1. **Disable Bypassing**
+    
         The InOrder CPU already accounts for the timing model of register bypassing between relevant pipeline stages. Checking whether or not a register value can be bypassed from a later pipeline stage depends on two conditions:
-        
+    
         * Whether or not the corresponding value is valid
         * Can the value be forwarded
         
         What needs to be done for this part of the assignment is to implement an option to disable register bypassing in all cases, such that the CPU is forced to stall on every dependency.
         
-        1. 6.2	Degrade Branch Prediction
+     1. **Degrade Branch Prediction**
         
         The InOrder CPU already implements a few branch predictor modules, including a tournament predictor and a simpler Branch Target Buffer (BTB). The pipeline timing enables you to figure out at the EX stage whether or not the branch prediction was correct. What you need to do is implement an option that will allow you to not only enable/disable the branch predictor, but degrade its accuracy to different levels as well.
         
@@ -120,7 +120,9 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
         * 50%
         * 0%
         
-        1. For this part, we want to be able to split up the Execution Unit into two stages. Modern pipelines employ deeper pipelines in order to increase the clock frequency. Instead of having a more complex stage that requires additional cycles, the corresponding stage is split into smaller stages, where each requires fewer cycles. However, as you know there is a trade-off for every design decision. What you need to do is split up the EX stage into EX1 + EX2 accordingly. In doing so, you need to figure out how to indicate that dependencies exist between the newly formed stages such that the pipeline accounts for stalls correctly.
+    1. **Split Execution Stage**
+    
+    For this part, we want to be able to split up the Execution Unit into two stages. Modern pipelines employ deeper pipelines in order to increase the clock frequency. Instead of having a more complex stage that requires additional cycles, the corresponding stage is split into smaller stages, where each requires fewer cycles. However, as you know there is a trade-off for every design decision. What you need to do is split up the EX stage into EX1 + EX2 accordingly. In doing so, you need to figure out how to indicate that dependencies exist between the newly formed stages such that the pipeline accounts for stalls correctly.
         
     1. **Submission instructions**
     
