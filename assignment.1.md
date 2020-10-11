@@ -42,6 +42,8 @@
     
     <img src="screen2.png" width="50%" />
     
+    In this assignment, we will need the *MinorCPU* model, which we can add to the *X86* build options by adding it to the *CPU_MODELS* list, before you compile.
+    
     We will be using the latest version of gem5, which has fairly up-to-date documentation outside of this assignment.
     For additional pointers on gem5, please see the book on learning gem5:
     
@@ -87,8 +89,8 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
 
 1. Assignment
     
-    gem5 is an immensely complex piece of software with over 100k lines of code. However, it is not necessary to understand all of gem5 prior to being able to effectively use it. For this assignment you should focus on the InOrder CPU Model located in /src/cpu/inorder. The InOrder CPU currently models a 5-stage pipeline (F|D|EX|M|WB).  (Hint: Use the -h flag with your Python script to find out how to specify the CPU model you use.)
-    One caveat of this CPU model is that each pipeline stage/component inherits from an abstracted resource object. As with every resource, there is the contingency of encountering a structural hazard. The occurrence of a structural hazard is dependent on the width of the corresponding stage. Thus in order to model one outstanding instruction per stage, you have to adjust the width of each stage to be 1.
+    gem5 is an immensely complex piece of software with over 100k lines of code. However, it is not necessary to understand all of gem5 prior to being able to effectively use it. For this assignment you should focus on the *MinorCPU* Model located in /src/cpu/minor. The *MinorCPU* currently models a simple pipelined.  (Hint: Use the -h flag with your Python script to find out how to specify the CPU model you use.)
+    One caveat of this CPU model is that each pipeline stage/component inherits from an abstracted resource object. As with every resource, there is the contingency of encountering a structural hazard. The occurrence of a structural hazard is dependent on the width of the corresponding stage. Thus in order to model one outstanding instruction per stage, you have to adjust the width of each stage to be 1 (*hint: look inside MinorCPU.py*).
     For this programming assignment, you will be required to implement the following changes in gem5:
 
     * Disable bypassing
