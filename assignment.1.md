@@ -57,7 +57,7 @@ For this assignment, we will use the x86 build configuration. Now, the command t
     scons-3 -j 4 ./build/X86/gem5.opt
     ```
     
-    You may be missing the gem5 style hook. If so, just hit enter and let the script install the style hook for you. This build will take quite a while the first time around, so using multiple processes is valuable. Even with 4 processes, it can take over 10 minutes to build. Figure 5 shows the completion of a successful build. When you build the simulator with scons, all of your source code is copied into the gem5/build directory for that particular build. This means two things. First, you can always simply remove the build directory (or a specific build’s directory inside gem5/build) to start from scratch (think of it like a "make clean"). Second, never make any manual changes within the build directory. You should make your changes elsewhere (i.e. gem5/src), and re-build the simulator. Re-building gem5 after the first build typically only takes a minute or two, depending on your changes.
+    You may be missing the gem5 style hook. If so, just hit enter and let the script install the style hook for you. This build will take quite a while the first time around, so using multiple processes is valuable. Even with 4 processes, it can take over 10 minutes to build. When you build the simulator with scons, all of your source code is copied into the gem5/build directory for that particular build. This means two things. First, you can always simply remove the build directory (or a specific build’s directory inside gem5/build) to start from scratch (think of it like a "make clean"). Second, never make any manual changes within the build directory. You should make your changes elsewhere (i.e. gem5/src), and re-build the simulator. Re-building gem5 after the first build typically only takes a minute or two, depending on your changes.
 
 1. **Running gem5: Hello World**
     
@@ -79,8 +79,7 @@ For this assignment, we will use the x86 build configuration. Now, the command t
 The benchmarks you’ll be running in this assignment are sjeng, libquantum, and bzip2. Using the gem5/configs/spec2k6/run.py script, you can run the following command:
 
     ```console
-    ##### Also need to set the rigth CPU model inside the spec2k directory.
-    ./build/X86/gem5.opt -d my_outputs configs/spec2k6/run.py -b sjeng --maxinsts=250000
+    ./build/X86/gem5.opt -d my_outputs configs/spec2k6/run.py -b bzip2 --maxinsts=250000 --cpu-type=MinorCPU --l1d_size=64kB --l1i_size=16kB --caches --l2cache
     ```
     
     As before with Hello World, we simply use the gem5.opt binary we built to run the simulator. However, here we added a -d flag to the gem5.opt run. This allows us to specify an output directory, rather than use the default m5out directory we saw during our Hello World run. You can see the new "my_outputs" directory created for the output of this run. Note that the -d flag came before the Python script file. This is because the -d flag is an option for the gem5.opt binary, not an option for the script.
