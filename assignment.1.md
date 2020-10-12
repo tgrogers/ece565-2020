@@ -88,28 +88,198 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
     
     Try running the other benchmarks, bzip2 and libquantum, and have them all output to separate directories. More options for the gem5/configs/spec2k6/run.py script can be seen by using the -h flag, or by going into the file and looking around.
 
-1. Assignment
+1. **Assignment**
     
     gem5 is an immensely complex piece of software with over 100k lines of code. However, it is not necessary to understand all of gem5 prior to being able to effectively use it. For this assignment you should focus on the *MinorCPU* Model located in /src/cpu/minor. The *MinorCPU* currently models a simple pipelined.  (Hint: Use the -h flag with your Python script to find out how to specify the CPU model you use.)
     One caveat of this CPU model is that each pipeline stage/component inherits from an abstracted resource object. As with every resource, there is the contingency of encountering a structural hazard. The occurrence of a structural hazard is dependent on the width of the corresponding stage. Thus in order to model one outstanding instruction per stage, you have to adjust the width of each stage to be 1 (*hint: look inside MinorCPU.py*).
     For this programming assignment, you will be required to implement the following changes in gem5:
 
-    * Disable bypassing
+    * Evaluate a simple pipeline.
     * Degrade branch prediction
     * Split the Execution stage into two separate pipeline stages
     
     Each of these are detailed further below. For each change, you will need to run the sjeng, bzip2, and libquantum benchmarks for 100 million instructions. These results will then be compared to the baseline gem5 performance for the InOrder CPU model. Make sure to take advantage of different output directories to avoid overwriting output data from different runs.
     
-    1. **Disable Bypassing**
+    1. **Evaluate a Simple Pipeline**
     
-        The InOrder CPU already accounts for the timing model of register bypassing between relevant pipeline stages. Checking whether or not a register value can be bypassed from a later pipeline stage depends on two conditions:
+        1. **Run a custom program**
+            In this task - you will write a C program, compile it then run it using 2 different CPU models. Place the code inside a new directory *part1/daxpy.cc*.
+        
+            The DAXPY loop (double precision aX + Y) is an oft used operation in programs that work with matrices and vectors. The following code implements DAXPY in C++11.
     
-        * Whether or not the corresponding value is valid
-        * Can the value be forwarded
+            ```cpp
+            #include <random>
+            #include <iostream>
+            
+            int main()
+            {
+                const int N = 1000;
+                double X[N];
+                double Y[N];
+                double alpha = 0.5;
+                std::random_device rd; std::mt19937 gen(rd());
+                std::uniform_real_distribution<> dis(1, 2);
+                for (int i = 0; i < N; ++i)
+                {
+                X[i] = dis(gen);
+                Y[i] = dis(gen);
+                }
+            
+                // Start of daxpy loop
+                for (int i = 0; i < N; ++i)
+                {
+                    Y[i] = alpha * X[i] + Y[i];
+                }
+                // End of daxpy loop
+   
+                double sum = 0;
+                for (int i = 0; i < N; ++i)
+                {
+                    sum += Y[i];
+                }
+                std::cout << sum;
+                return 0;·
+            }
+            ```
+            
         
-        What needs to be done for this part of the assignment is to implement an option to disable register bypassing in all cases, such that the CPU is forced to stall on every dependency.
+            Your first task is to compile this code statically and simulate it with gem5 using the timing simple cpu.
+            To compile the code on qstruct, use the following compiler arguments (for c++11 and optimizations):
+                    
+            ```console
+            g++ -O2 -std=gnu++11 daxpy.cc
+            ```
+            Compile the program with -O2 flag to avoid running into unimplemented x87 instructions while simulating with gem5. Report the breakup of instructions for different op classes. For this, grep for op_class in the file stats.txt.
+        1. **Examine the assembly**
+            
+            Generate the assembly code for the daxpy program above by using the -S and -O2 options when compiling with GCC. As you can see from the assembly code, instructions that are not central to the actual task of the program (computing aX + Y) will also be simulated. This includes the instructions for generating the vectors X and Y, summing elements in Y and printing the sum. When I compiled the code with -S, I got about 350 lines of assembly code, with only about 10-15 lines for the actual daxpy loop.
+
+            Usually while carrying out experiments for evaluating a design, one would like to look only at statistics for the portion of the code that is most important. To do so, typically programs are annotated so that the simulator, on reaching an annotated portion of the code, carries out functions like create a checkpoint, output and reset statistical variables.
+
+            You will edit the C++ code from the first part to output and reset stats just before the start of the DAXPY loop and just after it. For this, include the file ./include/gem5/m5ops.h in the program. You will find this file in util/m5 directory of the gem5 repository. Use the function m5_dump_reset_stats() from this file in your program. This function outputs the statistical variables and then resets them. You can provide 0 as the value for the delay and the period arguments.
+
+            To provide the definition of the m5_dump_reset_stats(), go to the directory util/m5/src/x86/ and edit the SConsopts in the following way:
+
+            ```console
+            diff --git a/util/m5/src/x86/SConsopts b/util/m5/src/x86/SConsopts
+            index 8763f29..7be70a3 100644
+            --- a/util/m5/src/x86/SConsopts
+            +++ b/util/m5/src/x86/SConsopts
+            @@ -27,7 +27,6 @@ Import('*')
+               
+            env['VARIANT'] = 'x86'
+            get_variant_opt('CROSS_COMPILE', '')
+            -env.Append(CFLAGS='-DM5OP_ADDR=0xFFFF0000')
+                
+            env['CALL_TYPE']['inst'].impl('m5op.S')
+            env['CALL_TYPE']['addr'].impl('m5op_addr.S', default=True)
+            ```
+            
+            Execute the following command in the directory util/m5:
+                
+            ```console
+            scons-3 src/x86 
+            ```
+            
+            This will create an object file named util/m5/build/x86/x86/m5op.o. Link this file with the program for DAXPY. Now again simulate the program with the timing simple CPU. This time you should see three sets of statistics in the file stats.txt. Report the breakup of instructions among different op classes for the three parts of the program. In the assisngment report, provide the fragment of the generated assembly code that starts with the call to m5_dumpreset_stats() and ends m5_dumpreset_stats(), and has the main daxpy loop in between.
+            
+        1. **Examine CPU types**
         
-     1. **Degrade Branch Prediction**
+            There are several different types of CPUs that gem5 supports: atomic, timing, out-of-order, inorder and kvm. Let's talk about the timing and the inorder cpus. The timing CPU (also known as SimpleTimingCPU) executes each arithmetic instruction in a single cycle, but requires multiple cycles for memory accesses. Also, it is not pipelined. So only a single instruction is being worked upon at any time. The inorder cpu (also known as Minor) executes instructions in a pipelined fashion. It has the following pipe stages: fetch1, fetch2, decode and execute.
+
+            Take a look at the file MinorCPU.py. In the definition of MinorFU, the class for functional units, we define two quantities opLat and issueLat. From the comments provided in the file, understand how these two parameters are to be used. Also note the different functional units that are instantiated as defined in class MinorDefaultFUPool.
+
+            Assume that the issueLat and the opLat of the FloatSimdFU can vary from 1 to 6 cycles and that they always sum to 7 cycles. For each decrease in the opLat, we need to pay with a unit increase in issueLat. Which design of the FloatSimd functional unit would you prefer? Provide statistical evidence obtained through simulations of the annotated portion of the code for daxpy.
+            
+            If you wish - you can use the following new configuration file that provides an example of how to extend the MinorCPU with options for op/issue latency.
+            
+            ```python
+            # -*- coding: utf-8 -*-
+            # Copyright (c) 2015 Mark D. Hill and David A. Wood
+            # All rights reserved.
+            #
+            # Redistribution and use in source and binary forms, with or without
+            # modification, are permitted provided that the following conditions are
+            # met: redistributions of source code must retain the above copyright
+            # notice, this list of conditions and the following disclaimer;
+            # redistributions in binary form must reproduce the above copyright
+            # notice, this list of conditions and the following disclaimer in the
+            # documentation and/or other materials provided with the distribution;
+            # neither the name of the copyright holders nor the names of its
+            # contributors may be used to endorse or promote products derived from
+            # this software without specific prior written permission.
+            #
+            # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+            # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+            # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+            # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+            # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+            # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+            # LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+            # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+            # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+            # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+            # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+            #
+            # Authors: Jason Power
+            
+            """ CPU based on MinorCPU with options for a simple gem5 configuration script
+
+            This file contains a CPU model based on MinorCPU that allows for a few options
+            to be tweaked. 
+            Specifically, issue latency, op latency, and the functional unit pool.
+
+            See src/cpu/MinorCPU.py for MinorCPU details.
+
+            """
+
+            from m5.objects import MinorCPU, MinorFUPool
+            from m5.objects import MinorDefaultIntFU, MinorDefaultIntMulFU
+            from m5.objects import MinorDefaultIntDivFU, MinorDefaultFloatSimdFU
+            from m5.objects import MinorDefaultMemFU, MinorDefaultFloatSimdFU
+            from m5.objects import MinorDefaultMiscFU
+    
+            class MyFloatSIMDFU(MinorDefaultFloatSimdFU):
+    
+            # From MinorDefaultFloatSimdFU
+            # opLat = 6
+    
+            # From MinorFU
+            # issueLat = 1
+
+            def __init__(self, options=None):
+                super(MinorDefaultFloatSimdFU, self).__init__()
+
+            if options and options.fpu_operation_latency:
+                self.opLat = options.fpu_operation_latency
+
+            if  options and options.fpu_issue_latency:
+                self.issueLat = options.fpu_issue_latency
+
+
+            class MyFUPool(MinorFUPool):
+
+            def __init__(self, options=None):
+                super(MinorFUPool, self).__init__()
+
+            # Copied from src/mem/MinorCPU.py
+            self.funcUnits = [MinorDefaultIntFU(), MinorDefaultIntFU(),
+                          MinorDefaultIntMulFU(), MinorDefaultIntDivFU(),
+                          MinorDefaultMemFU(), MinorDefaultMiscFU(),
+                          # My FPU
+                          MyFloatSIMDFU(options)]
+
+
+            class MyMinorCPU(MinorCPU):
+
+            def __init__(self, options=None):
+                super(MinorCPU, self).__init__()
+        
+                self.executeFuncUnits = MyFUPool(options)
+    
+            ```
+            
+    1. **Degrade Branch Prediction**
         
         The InOrder CPU already implements a few branch predictor modules, including a tournament predictor and a simpler Branch Target Buffer (BTB). The pipeline timing enables you to figure out at the EX stage whether or not the branch prediction was correct. What you need to do is implement an option that will allow you to not only enable/disable the branch predictor, but degrade its accuracy to different levels as well.
         
