@@ -104,10 +104,12 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
     
     1. **Evaluate a Simple Pipeline**
     
+        In this task - you will write a C program, compile it then run it using different CPU models. 
+    
         1. **Run a custom program**
-            In this task - you will write a C program, compile it then run it using 2 different CPU models. Place the code inside a new directory *part1/daxpy.cc*.
-        
+            
             The DAXPY loop (double precision aX + Y) is an oft used operation in programs that work with matrices and vectors. The following code implements DAXPY in C++11.
+            Place the code inside a new directory *part1/daxpy.cc*.
     
             ```cpp
             #include <random>
