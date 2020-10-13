@@ -251,31 +251,28 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
             # From MinorFU
             # issueLat = 1
 
-            def __init__(self, options=None):
-                super(MinorDefaultFloatSimdFU, self).__init__()
+                def __init__(self, options=None):
+                    super(MinorDefaultFloatSimdFU, self).__init__()
 
-            if options and options.fpu_operation_latency:
-                self.opLat = options.fpu_operation_latency
+                    if options and options.fpu_operation_latency:
+                        self.opLat = options.fpu_operation_latency
 
-            if  options and options.fpu_issue_latency:
-                self.issueLat = options.fpu_issue_latency
+                    if  options and options.fpu_issue_latency:
+                        self.issueLat = options.fpu_issue_latency
 
 
             class MyFUPool(MinorFUPool):
-
-            def __init__(self, options=None):
-                super(MinorFUPool, self).__init__()
-
-            # Copied from src/mem/MinorCPU.py
-            self.funcUnits = [MinorDefaultIntFU(), MinorDefaultIntFU(),
-                          MinorDefaultIntMulFU(), MinorDefaultIntDivFU(),
-                          MinorDefaultMemFU(), MinorDefaultMiscFU(),
-                          # My FPU
-                          MyFloatSIMDFU(options)]
+                def __init__(self, options=None):
+                    super(MinorFUPool, self).__init__()
+                    # Copied from src/mem/MinorCPU.py
+                    self.funcUnits = [MinorDefaultIntFU(), MinorDefaultIntFU(),
+                                  MinorDefaultIntMulFU(), MinorDefaultIntDivFU(),
+                                  MinorDefaultMemFU(), MinorDefaultMiscFU(),
+                                  # My FPU
+                                  MyFloatSIMDFU(options)]
 
 
             class MyMinorCPU(MinorCPU):
-
                 def __init__(self, options=None):
                     super(MinorCPU, self).__init__()
                     self.executeFuncUnits = MyFUPool(options)
