@@ -276,10 +276,9 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
 
             class MyMinorCPU(MinorCPU):
 
-            def __init__(self, options=None):
-                super(MinorCPU, self).__init__()
-        
-                self.executeFuncUnits = MyFUPool(options)
+                def __init__(self, options=None):
+                    super(MinorCPU, self).__init__()
+                    self.executeFuncUnits = MyFUPool(options)
     
             ```
             
