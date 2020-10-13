@@ -10,7 +10,7 @@
     
     The assignment has been made available through github classroom. To sign up - please link your github account with your Purdue email by following the directions here:
     
-    https://classroom.github.com/a/PrGvMvVm
+    https://classroom.github.com/a/0HI8i1PI
     
     The programming assignment will be completed on a cluster of "qstruct" servers. There are 19 of these machines. You can access them by ssh’ing into qstruct.ecn.purdue.edu from any terminal. You will use your Purdue Career Account username and password. Below is the sample command for logging in:
     ```console
