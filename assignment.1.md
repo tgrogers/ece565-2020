@@ -22,7 +22,7 @@
     ```console
     pip3 install --user six
     module load git # you should add this line to your ~/.bashrc file so that each time you login - otherwise you will end up using an ancient git version
-    git clone https://github.com/purdue-ece565-2020/assignment-1-v2-<your-github-user-name>.git
+    git clone https://github.com/purdue-ece565-2020/assignment-1-v4-<your-github-user-name>.git
     ```
     
     Git is the world's most popular revision control system, so if you are not familiar with it, now is a great time :).
