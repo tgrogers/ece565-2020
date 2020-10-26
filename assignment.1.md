@@ -113,6 +113,8 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
     
     Each of these are detailed further below. For part (i), just evaluate the example code, running to completion. For parts (ii) and (iii), you will need to run the sjeng, bzip2, and libquantum benchmarks for 100 million instructions.  These results will then be compared to the baseline gem5 performance for the MinorCPU model. Make sure to take advantage of different output directories to avoid overwriting output data from different runs.
     
+    A nice overview of MinorCPU can be found here: https://www.gem5.org/documentation/general_docs/cpu_models/minor_cpu
+    
     1. **Evaluate a Simple Pipeline**
     
         In this task - you will write a C program, compile it then run it using different CPU models. 
