@@ -51,7 +51,7 @@
     https://www.gem5.org/documentation/learning_gem5/introduction/
     
     This file indicates that the target ISA is X86, and all of the CPU Models should be compiled in. The last line PROTOCOL is a specific type of coherence protocol for the Ruby Memory Model, which we will ignore for now.
-For this assignment, we will use the x86 build configuration. Now, the command to build this configuration is:
+For this assignment, we will use the x86 and ARM build configurations. Now, the command to build this configuration is:
     
     ```console
     scons-3 -j 4 ./build/X86/gem5.opt
@@ -76,10 +76,21 @@ For this assignment, we will use the x86 build configuration. Now, the command t
 1. **Running gem5: Benchmarks**
     
     For the programming assignment, you’ll need to run benchmarks from the SPEC2006 benchmark suite. These are available at /home/min/a/ece565/benchspec/, and a Python configuration script to run the benchmarks is in your copy of gem5.
-The benchmarks you’ll be running in this assignment are sjeng, libquantum, and bzip2. Using the gem5/configs/spec2k6/run.py script, you can run the following command:
-
+    The benchmarks you’ll be running in this assignment are sjeng, libquantum, and bzip2.
+    Please apply the following patch to your repo to run the benchmarks:
+    [Patch to run ARM Spec](arm.patch)
+    
+    Do this by downloading the patch, then running the following from the assignment directory:
+    
     ```console
-    ./build/X86/gem5.opt -d my_outputs configs/spec2k6/run.py -b bzip2 --maxinsts=250000 --cpu-type=MinorCPU --l1d_size=64kB --l1i_size=16kB --caches --l2cache
+    git apply arm.patch
+    ```
+    
+    Using the gem5/configs/spec2k6/run.py script, you can run the following command:
+    
+    ```console
+    scons-3 -j 4 ./build/ARM/gem5.opt
+    ./build/ARM/gem5.opt -d my_outputs configs/spec2k6/run.py -b bzip2 --maxinsts=250000 --cpu-type=MinorCPU --l1d_size=64kB --l1i_size=16kB --caches --l2cache
     ```
     
     As before with Hello World, we simply use the gem5.opt binary we built to run the simulator. However, here we added a -d flag to the gem5.opt run. This allows us to specify an output directory, rather than use the default m5out directory we saw during our Hello World run. You can see the new "my_outputs" directory created for the output of this run. Note that the -d flag came before the Python script file. This is because the -d flag is an option for the gem5.opt binary, not an option for the script.
@@ -280,6 +291,22 @@ The benchmarks you’ll be running in this assignment are sjeng, libquantum, and
             ```
             
     1. **Degrade Branch Prediction**
+        
+        For this part and the following part (split execution stage) you should use the ARM build of gem5. Make sure you are building the ARM version using the command line:
+        
+        ```console
+        scons-3 -j 4 ./build/ARM/gem5.opt
+        ```
+        
+        Also - make sure you have applied the arm patch (if you already did this, then skip this step).
+        
+        [Patch to run ARM Spec](arm.patch)
+    
+        Do this by downloading the patch, then running the following from the assignment directory:
+    
+        ```console
+        git apply arm.patch
+        ```
         
         The MinorCPU already implements a few branch predictor modules, including a tournament predictor and a simpler Branch Target Buffer (BTB). The pipeline timing enables you to figure out at the EX stage whether or not the branch prediction was correct. What you need to do is implement an option that will allow you to not only enable/disable the branch predictor, but degrade its accuracy to different levels as well.
         
