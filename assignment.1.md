@@ -75,7 +75,7 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
     
 1. **Running gem5: Benchmarks**
     
-    For the programming assignment, you’ll need to run benchmarks from the SPEC2006 benchmark suite. These are available at /home/min/a/ece565/benchspec/, and a Python configuration script to run the benchmarks is in your copy of gem5.
+    For the programming assignment, you’ll need to run benchmarks from the SPEC2006 benchmark suite. These are available at /home/min/a/ece565/benchspec-2020/, and a Python configuration script to run the benchmarks is in your copy of gem5.
     The benchmarks you’ll be running in this assignment are sjeng, libquantum, and bzip2.
     Please apply the following patch to your repo to run the benchmarks: [patch to run ARM Spec](arm.patch)
     
