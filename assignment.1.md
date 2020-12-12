@@ -158,7 +158,12 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
             ```console
             g++ -O2 -std=gnu++11 daxpy.cc
             ```
-            Compile the program with -O2 flag to avoid running into unimplemented x87 instructions while simulating with gem5. Report the breakup of instructions for different op classes. For this, grep for op_class in the file stats.txt.
+            Compile the program with -O2 flag to avoid running into unimplemented x87 instructions while simulating with gem5. Report the breakup of instructions for different op classes. For this, grep for op_class in the file stats.txt. Run the compiled file using
+            
+            ```console
+            ./build/X86/gem5.opt configs/example/se.py -c <output-from-daxpy-build>
+            ```
+    
         1. **Examine the assembly**
             
             Generate the assembly code for the daxpy program above by using the -S and -O2 options when compiling with GCC. As you can see from the assembly code, instructions that are not central to the actual task of the program (computing aX + Y) will also be simulated. This includes the instructions for generating the vectors X and Y, summing elements in Y and printing the sum. When I compiled the code with -S, I got about 350 lines of assembly code, with only about 10-15 lines for the actual daxpy loop.
