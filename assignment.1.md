@@ -235,7 +235,7 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
             # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
             # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             #
-            # Authors: Jason Power
+            # Authors: Jason Power, updates by Tim Rogers
             
             """ CPU based on MinorCPU with options for a simple gem5 configuration script
 
@@ -243,7 +243,7 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
             to be tweaked. 
             Specifically, issue latency, op latency, and the functional unit pool.
 
-            See src/cpu/MinorCPU.py for MinorCPU details.
+            See src/cpu/minor/MinorCPU.py for MinorCPU details.
 
             """
 
