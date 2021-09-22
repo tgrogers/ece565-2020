@@ -297,16 +297,6 @@ For this assignment, we will use the x86 and ARM build configurations. Now, the 
         scons-3 -j 4 ./build/ARM/gem5.opt
         ```
         
-        Also - make sure you have applied the arm patch (if you already did this, then skip this step).
-        
-        [Patch to run ARM Spec](arm.patch)
-    
-        Do this by downloading the patch, then running the following from the assignment directory:
-    
-        ```console
-        git apply arm.patch
-        ```
-        
         The MinorCPU already implements a few branch predictor modules, including a tournament predictor and a simpler Branch Target Buffer (BTB). The pipeline timing enables you to figure out at the EX stage whether or not the branch prediction was correct. What you need to do is implement an option that will allow you to not only enable/disable the branch predictor, but degrade its accuracy to different levels as well.
         
         Note that the pipeline already handles the squashing of instructions fetched from the wrong path. On a misprediction, the pipeline will initiate calls to update the corresponding branch predictor’s entry with the correct target address.
